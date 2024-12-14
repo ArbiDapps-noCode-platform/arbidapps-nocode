@@ -1,3 +1,4 @@
+"use client"
 // import stars from "@/public/assets/stars.png"
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
@@ -16,7 +17,7 @@ export default function Home() {
           className="absolute inset-0 w-full h-full object-cover opacity-50 select-none"
         />
         <div className="relative z-10 px-16 py-14 sm:px-40 sm:py-28">
-          <h1 className="font-light text-3xl sm:text-6xl sm:leading-relaxed  mb-16">
+          <h1 className="font-light text-3xl sm:text-6xl sm:leading-relaxed mb-16">
             ArbiDapps <br />
             <span className="bg-yellow-300 px-1 text-black ">noCode</span> Platform
           </h1>
@@ -25,6 +26,7 @@ export default function Home() {
             hover:bg-white hover:text-black hover:cursor-pointer
             transition duration-200 ease-in-out
             active:scale-95 active:bg-gray-200 select-none"
+            onClick={() => alert("Connect wallet")}
           >
             Connect wallet
           </button>
