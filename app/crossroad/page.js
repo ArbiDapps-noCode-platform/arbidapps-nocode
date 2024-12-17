@@ -25,7 +25,6 @@ export default function Home() {
         height: 50
     })
 
-
     const handleAboutClick = () => {
         setShowMenuContent(false); // First, hide the original content
         setTimeout(() => setExpandAboutWidth(true), 200); // Begin horizontal expansion
@@ -49,11 +48,11 @@ export default function Home() {
 
     return (
         <div
-            className="h-screen flex flex-col bg-gradient-to-b from-[rgba(66,55,226,1)] 
-      via-[rgba(66,55,226,1)] to-[rgba(0,0,0,0)] bg-[length:100%_100%]"
+            className={`h-screen flex flex-col bg-gradient-to-b from-[rgba(66,55,226,1)] 
+      via-[rgba(66,55,226,1)] to-[rgba(0,0,0,0)] bg-[length:100%_100%]`}
         >
             <Header />
-            <main className="flex relative flex-grow items-center justify-center h-40">
+            <main className="relative flex flex-grow items-center justify-center">
                 <motion.div
                     initial={{ width: "50%", height: "50%" }} // Starting dimensions
                     animate={{
@@ -73,15 +72,18 @@ export default function Home() {
                         if (latest.height === "80%" && expandAboutHeight) {
                             setShowAboutContent(true); // Show new content
                         }
-                        if (latest.width === "100%" && expandAboutWidth) {
+                        if (latest.width === "100%" && expandUsePlatformWidth) {
                             setExpandUsePlatformHeight(true); // Trigger vertical expansion
                         }
-                        if (latest.height === "100%" && expandAboutHeight) {
+                        if (latest.height === "100%" && expandUsePlatformHeight) {
                             setShowUsePlatformContent(true); // Show new content
                         }
                     }}
-                    className={`bg-black text-white rounded-lg px-8 py-8 sm:px-24 sm:py-16 shadow-lg border border-white overflow-hidden
-                        ${expandUsePlatformWidth && expandUsePlatformHeight ? "absolute z-50" : "relative"}`}
+                    // className={`bg-black text-white rounded-lg px-8 py-8 sm:px-24 sm:py-16 shadow-lg border border-white overflow-hidden
+                    // ${expandUsePlatformWidth && expandUsePlatformHeight ? "absolute z-50" : "relative"}`}
+                    className={` bg-black text-white shadow-lg border border-white flex flex-col rounded-lg
+                    justify-center items-center px-8 py-8 sm:px-24 sm:py-16
+                    ${expandUsePlatformWidth && expandUsePlatformHeight ? "fixed" : "relative"}`}
                 >
                     <AnimatePresence>
                         {showMenuContent && (
