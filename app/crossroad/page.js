@@ -6,175 +6,146 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
 export default function Home() {
-    const [showMenuContent, setShowMenuContent] = useState(true); // State to control original content visibility
-
-    const [showAboutContent, setShowAboutContent] = useState(false); // State to control new content visibility
-    const [expandAboutWidth, setExpandAboutWidth] = useState(false); // State to control horizontal expansion
-    const [expandAboutHeight, setExpandAboutHeight] = useState(false); // State to control vertical expansion
-
-    const [showUsePlatformContent, setShowUsePlatformContent] = useState(false); // State to control new content visibility
-    const [expandUsePlatformWidth, setExpandUsePlatformWidth] = useState(false); // State to control horizontal expansion
-    const [expandUsePlatformHeight, setExpandUsePlatformHeight] = useState(false); // State to control vertical expansion
-    const [usePlatform, setUsePlatform] = useState(false); // New state to control "Use Platform"
-
-    // Refactor: can reduce the ammount of states into a single object, will do later
     const [menuState, setMenuState] = useState({
-        state: 0,
-        title: "ArbiDapps noCodePlatform",
-        width: 50,
-        height: 50
-    })
+        view: "menu", // Possible values: 'menu', 'about', 'platform'
+        showContent: true, // Remove content during animations
+        dimensions: { // Size of the main content
+            width: "50%",
+            height: "50%",
+        },
+        fullWidth: false, fullHeight: false, // To activate certain animation effects
+        expanded: false, // Indicates if content is expanded
+    });
+
+    // Function to
+    const updateMenuState = (updates) =>
+        setMenuState((prevState) => ({ ...prevState, ...updates }));
 
     const handleAboutClick = () => {
-        setShowMenuContent(false); // First, hide the original content
-        setTimeout(() => setExpandAboutWidth(true), 200); // Begin horizontal expansion
+        updateMenuState({ view: "about", showContent: false, dimensions: { width: "80%", height: "80%" }, expanded: true });
+        setTimeout(() => updateMenuState({ showContent: true }), 1_000)
     };
 
     const handleGoBackClick = () => {
-        setShowAboutContent(false); // Hide the new content
-        setTimeout(() => setExpandAboutHeight(false), 200); // Reverse vertical expansion
-        setTimeout(() => {
-            setExpandAboutWidth(false); // Reverse horizontal expansion
-            setShowMenuContent(true); // Show original content after collapse
-        }, 600); // Delay for horizontal reversal to finish
+        updateMenuState({ view: "menu", showContent: false, dimensions: { width: "50%", height: "50%" }, expanded: false });
+        setTimeout(() => updateMenuState({ showContent: true }), 1_000)
     };
-
     const handleUsePlatformClick = () => {
-        setShowMenuContent(false); // Hide the content
-        setTimeout(() => setExpandUsePlatformWidth(true), 200); // First expand horizontally
-        setTimeout(() => setExpandUsePlatformHeight(true), 800); // Then expand vertically
-        setUsePlatform(true); // Mark as "Use the Platform" for content control
+        updateMenuState({ view: "platform", showContent: false, dimensions: { width: "100%", height: "100%" }, expanded: true });
+        setTimeout(() => updateMenuState({ showContent: true }), 1_000)
     };
 
     return (
         <div
-            // className={`h-screen flex flex-col bg-gradient-to-b from-[rgba(66,55,226,1)] 
-            // via-[rgba(66,55,226,1)] to-[rgba(0,0,0,0)] bg-[length:100%_100%]`}
             className={`relative h-screen flex flex-col bg-gradient-to-b from-[rgba(66,55,226,1)] 
                 via-[rgba(66,55,226,1)] to-[rgba(0,0,0,0)] bg-[length:100%_100%]`}
         >
             <Header />
-            <main 
-            // className="relative flex flex-grow items-center justify-center"
+            <main
                 className={`absolute top-0 left-0 w-full h-full flex items-center justify-center z-10`}
-                // className={`flex-grow flex items-center justify-center`}
             >
                 <motion.div
-                    initial={{ width: "50%", height: "50%" }} // Starting dimensions
+                    initial={{ width: "50%", height: "50%" }}
                     animate={{
-                        width: expandAboutWidth ? "80%" : (expandUsePlatformWidth ? "100%" : "50%"), // Expand or collapse horizontally
-                        height: expandAboutHeight ? "80%" : (expandUsePlatformHeight ? "100%" : "50%"), // Expand or collapse vertically
+                        width: menuState.dimensions.width,
+                        height: menuState.dimensions.height,
                     }}
                     transition={{
-                        width: { duration: 0.4, ease: "easeInOut" }, // Smooth width transition
-                        height: expandAboutHeight
-                            ? { duration: 0.4, ease: "easeInOut", delay: 0.2 } // Smooth height transition with delay
-                            : { duration: 0.4, ease: "easeInOut" }, // Smooth collapse
+                        // When expanding, first expand the width, then height
+                        // When rectracting, first retract height, then width
+                        width: menuState.expanded
+                            ? { duration: 0.4, ease: "easeInOut" }
+                            : { duration: 0.4, ease: "easeInOut", delay: 0.4 },
+                        height: menuState.expanded
+                            ? { duration: 0.4, ease: "easeInOut", delay: 0.4 }
+                            : { duration: 0.4, ease: "easeInOut" },
                     }}
-                    onAnimationComplete={(latest) => {
-                        if (latest.width === "80%" && expandAboutWidth) {
-                            setExpandAboutHeight(true); // Trigger vertical expansion
+                    onUpdate={(latest) => {
+                        // Check if width or height reaches 100% and update the state, 
+                        // this is to activate a css class for the animation
+                        if (!menuState.fullWidth && parseFloat(latest.width) === 100) {
+                            updateMenuState({ fullWidth: true });
                         }
-                        if (latest.height === "80%" && expandAboutHeight) {
-                            setShowAboutContent(true); // Show new content
-                        }
-                        if (latest.width === "100%" && expandUsePlatformWidth) {
-                            setExpandUsePlatformHeight(true); // Trigger vertical expansion
-                        }
-                        if (latest.height === "100%" && expandUsePlatformHeight) {
-                            setShowUsePlatformContent(true); // Show new content
+                        if (!menuState.fullHeight && parseFloat(latest.height) === 100) {
+                            updateMenuState({ fullHeight: true });
                         }
                     }}
-                    // className={`bg-black text-white rounded-lg px-8 py-8 sm:px-24 sm:py-16 shadow-lg border border-white overflow-hidden
-                    // ${expandUsePlatformWidth && expandUsePlatformHeight ? "absolute z-50" : "relative"}`}
                     className={` bg-black text-white shadow-lg border border-white flex flex-col rounded-lg
                     justify-center items-center px-8 py-8 sm:px-24 sm:py-16
-                    ${expandUsePlatformWidth ? "border-x-0 rounded-none" : ""}
-                    ${expandUsePlatformHeight ? "border-0" : ""}
-                    ${expandUsePlatformWidth && expandUsePlatformHeight ? "fixed" : "relative"}`}
+                    ${menuState.fullWidth ? "border-x-0 rounded-none" : ""} 
+                    ${menuState.fullHeight ? "border-0" : ""}
+                    `}
                 >
                     <AnimatePresence>
-                        {showMenuContent && (
-                            <motion.div
-                                initial={{ opacity: 1 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.4 }} // Smooth fade-out transition
-                                className="flex flex-col text-left"
-                            >
-                                <h1 className="font-light text-3xl sm:text-4xl self-start mb-24">
-                                    ArbiDapps <br /> noCode Platform
-                                </h1>
 
-                                <div className="flex justify-between gap-4">
-                                    <button
-                                        className="border border-white rounded-lg py-1 px-2 sm:py-2 sm:px-4 hover:bg-[rgba(66,55,226,1)] hover:border-[rgba(66,55,226,1)] transition duration-200"
-                                        onClick={handleAboutClick} // Trigger fade-out and expansion
-                                    >
-                                        About the Platform
-                                    </button>
-                                    <button
-                                        className="border border-white rounded-lg py-1 px-2 sm:py-2 sm:px-4 hover:bg-[rgba(66,55,226,1)] hover:border-[rgba(66,55,226,1)] transition duration-200"
-                                        onClick={handleUsePlatformClick}
-                                    >
-                                        Use the Platform
-                                    </button>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                        <motion.div
+                            initial={{ opacity: 1 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.4 }} // Smooth fade-out transition
+                            className="flex flex-col items-start justify-start"
+                        >
+                            {menuState.view == "menu" && menuState.showContent && (
+                                <>
+                                    <h1 className="font-light text-3xl sm:text-4xl self-start mb-24">
+                                        ArbiDapps <br /> noCode Platform
+                                    </h1>
 
-                    {/* New Content */}
-                    <AnimatePresence>
-                        {showAboutContent && (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.4 }} // Smooth fade-in transition
-                                className="flex flex-col items-start justify-start"
-                            >
-                                <h2 className="font-light text-2xl sm:text-3xl text-left mb-8">
-                                    ABOUT THE PLATFORM
-                                </h2>
-                                <hr className="border-t border-white w-full mb-8" />
-                                <p className="font-light text-sm sm:text-base leading-relaxed text-justify mb-16">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-                                    vulputate pharetra dignissim. Curabitur imperdiet nisi a
-                                    hendrerit faucibus. Vestibulum rutrum fringilla sem in
-                                    vestibulum. Cras id finibus lectus, vitae hendrerit ligula...
-                                </p>
-                                <button
-                                    className="border border-white rounded-lg py-1 px-2 sm:py-2 sm:px-4 hover:bg-white hover:text-black transition duration-200"
-                                    onClick={handleGoBackClick} // Trigger reverse animations
-                                >
-                                    Go Back
-                                </button>
-                            </motion.div>
-                        )}
-                        {showUsePlatformContent && (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.4 }} // Smooth fade-in transition
-                                className="flex flex-col items-start justify-start"
-                            >
-                                <h2 className="font-light text-2xl sm:text-3xl text-left mb-8">
-                                    USE THE PLATFORM
-                                </h2>
-                                <hr className="border-t border-white w-full mb-8" />
-                                <p className="font-light text-sm sm:text-base leading-relaxed text-justify mb-16">
-                                    Placeholder for the content
-                                </p>
-                                <button
-                                    className="border border-white rounded-lg py-1 px-2 sm:py-2 sm:px-4 hover:bg-white hover:text-black transition duration-200"
-                                    onClick={handleGoBackClick} // Trigger reverse animations
-                                >
-                                    Go Back
-                                </button>
-                            </motion.div>
-                        )}
+                                    <div className="flex justify-between gap-4">
+                                        <button
+                                            className="border border-white rounded-lg py-1 px-2 sm:py-2 sm:px-4 hover:bg-[rgba(66,55,226,1)] hover:border-[rgba(66,55,226,1)] transition duration-200"
+                                            onClick={handleAboutClick} // Trigger fade-out and expansion
+                                        >
+                                            About the Platform
+                                        </button>
+                                        <button
+                                            className="border border-white rounded-lg py-1 px-2 sm:py-2 sm:px-4 hover:bg-[rgba(66,55,226,1)] hover:border-[rgba(66,55,226,1)] transition duration-200"
+                                            onClick={handleUsePlatformClick}
+                                        >
+                                            Use the Platform
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+                            {menuState.view == "about" && menuState.showContent && (
+                                <>
+                                    <h1 className="font-light text-2xl sm:text-3xl text-left mb-8">
+                                        ABOUT THE PLATFORM
+                                    </h1>
+                                    <hr className="border-t border-white w-full mb-8" />
+                                    <p className="font-light text-sm sm:text-base leading-relaxed text-justify mb-16">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                                        vulputate pharetra dignissim. Curabitur imperdiet nisi a
+                                        hendrerit faucibus. Vestibulum rutrum fringilla sem in
+                                        vestibulum. Cras id finibus lectus, vitae hendrerit ligula...
+                                    </p>
+                                    <button
+                                        className="border border-white rounded-lg py-1 px-2 sm:py-2 sm:px-4 hover:bg-white hover:text-black transition duration-200"
+                                        onClick={handleGoBackClick} // Trigger reverse animations
+                                    >
+                                        Go Back
+                                    </button>
+                                </>
+                            )}
+                            {menuState.view == "platform" && menuState.showContent && (
+                                <>
+                                    <h2 className="font-light text-2xl sm:text-3xl text-left mb-8">
+                                        USE THE PLATFORM
+                                    </h2>
+                                    <hr className="border-t border-white w-full mb-8" />
+                                    <p className="font-light text-sm sm:text-base leading-relaxed text-justify mb-16">
+                                        Placeholder for the content
+                                    </p>
+                                    <button
+                                        className="border border-white rounded-lg py-1 px-2 sm:py-2 sm:px-4 hover:bg-white hover:text-black transition duration-200"
+                                        onClick={handleGoBackClick} // Trigger reverse animations
+                                    >
+                                        Go Back
+                                    </button>
+                                </>
+                            )}
+
+                        </motion.div>
                     </AnimatePresence>
                 </motion.div>
             </main>
