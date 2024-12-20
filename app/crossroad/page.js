@@ -1,39 +1,53 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
 export default function Home() {
-    const [menuState, setMenuState] = useState({
-        view: "menu", // Possible values: 'menu', 'about', 'platform'
-        showContent: true, // Remove content during animations
-        dimensions: { // Size of the main content
-            width: "50%",
-            height: "50%",
-        },
-        fullWidth: false, fullHeight: false, // To activate certain animation effects
-        expanded: false, // Indicates if content is expanded
-    });
+    const [menuState, setMenuState] = useState(null); // Initial state is null to indicate loading
 
-    // Function to
+    useEffect(() => {
+        const isMobile = window.innerWidth <= 768;
+        setMenuState({
+            view: "menu", // Possible values: 'menu', 'about', 'platform'
+            showContent: true, // Remove content during animations
+            isMobile: isMobile,
+            dimensions: isMobile
+                ? { width: "80%", height: "50%" } // Mobile dimensions
+                : { width: "50%", height: "50%" }, // Desktop dimensions
+            fullWidth: false,
+            fullHeight: false, // To activate certain animation effects
+            expanded: false, // Indicates if content is expanded
+        });
+    }, []); // Run only once when the component mounts
+
+    // Abstraction to update the menu state
     const updateMenuState = (updates) =>
         setMenuState((prevState) => ({ ...prevState, ...updates }));
 
+    // To display the about menu
     const handleAboutClick = () => {
         updateMenuState({ view: "about", showContent: false, dimensions: { width: "80%", height: "80%" }, expanded: true });
         setTimeout(() => updateMenuState({ showContent: true }), 1_000)
     };
 
+    // To return to the initial menu
     const handleGoBackClick = () => {
-        updateMenuState({ view: "menu", showContent: false, dimensions: { width: "50%", height: "50%" }, expanded: false });
+        updateMenuState({ view: "menu", showContent: false, dimensions: { width: (menuState.isMobile ? "80%" : "50%"), height: "50%" }, expanded: false });
         setTimeout(() => updateMenuState({ showContent: true }), 1_000)
     };
+
+    // To display the use platform action
     const handleUsePlatformClick = () => {
         updateMenuState({ view: "platform", showContent: false, dimensions: { width: "100%", height: "100%" }, expanded: true });
         setTimeout(() => updateMenuState({ showContent: true }), 1_000)
     };
+    if (!menuState) {
+        // Render nothing or a loading indicator until menuState is defined
+        return null;
+    }
 
     return (
         <div
@@ -45,7 +59,7 @@ export default function Home() {
                 className={`absolute top-0 left-0 w-full h-full flex items-center justify-center z-10`}
             >
                 <motion.div
-                    initial={{ width: "50%", height: "50%" }}
+                    initial={{ width: menuState.dimensions.width, height: menuState.dimensions.height }}
                     animate={{
                         width: menuState.dimensions.width,
                         height: menuState.dimensions.height,
@@ -71,18 +85,17 @@ export default function Home() {
                         }
                     }}
                     className={` bg-black text-white shadow-lg border border-white flex flex-col rounded-lg
-                    justify-center items-center px-8 py-8 sm:px-24 sm:py-16
+                    justify-center items-center px-6 py-8 sm:px-24 sm:py-16
                     ${menuState.fullWidth ? "border-x-0 rounded-none" : ""} 
                     ${menuState.fullHeight ? "border-0" : ""}
                     `}
                 >
                     <AnimatePresence>
-
                         <motion.div
                             initial={{ opacity: 1 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            transition={{ duration: 0.4 }} // Smooth fade-out transition
+                            // transition={{ duration: 0.4 }} // Smooth fade-out transition
                             className="flex flex-col items-start justify-start"
                         >
                             {menuState.view == "menu" && menuState.showContent && (
@@ -129,22 +142,13 @@ export default function Home() {
                             )}
                             {menuState.view == "platform" && menuState.showContent && (
                                 <>
-                                    <h2 className="font-light text-2xl sm:text-3xl text-left mb-8">
-                                        USE THE PLATFORM
-                                    </h2>
-                                    <hr className="border-t border-white w-full mb-8" />
-                                    <p className="font-light text-sm sm:text-base leading-relaxed text-justify mb-16">
-                                        Placeholder for the content
-                                    </p>
-                                    <button
-                                        className="border border-white rounded-lg py-1 px-2 sm:py-2 sm:px-4 hover:bg-white hover:text-black transition duration-200"
-                                        onClick={handleGoBackClick} // Trigger reverse animations
-                                    >
-                                        Go Back
-                                    </button>
+                                    {menuState.isMobile && (
+                                        <p className="font-light text-sm sm:text-base leading-relaxed text-justify mb-16">
+                                            Please use a Desktop device to access the platform
+                                        </p>
+                                    )}
                                 </>
                             )}
-
                         </motion.div>
                     </AnimatePresence>
                 </motion.div>
