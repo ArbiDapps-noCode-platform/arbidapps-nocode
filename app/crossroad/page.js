@@ -48,11 +48,17 @@ export default function Home() {
 
     return (
         <div
-            className={`h-screen flex flex-col bg-gradient-to-b from-[rgba(66,55,226,1)] 
-      via-[rgba(66,55,226,1)] to-[rgba(0,0,0,0)] bg-[length:100%_100%]`}
+            // className={`h-screen flex flex-col bg-gradient-to-b from-[rgba(66,55,226,1)] 
+            // via-[rgba(66,55,226,1)] to-[rgba(0,0,0,0)] bg-[length:100%_100%]`}
+            className={`relative h-screen flex flex-col bg-gradient-to-b from-[rgba(66,55,226,1)] 
+                via-[rgba(66,55,226,1)] to-[rgba(0,0,0,0)] bg-[length:100%_100%]`}
         >
             <Header />
-            <main className="relative flex flex-grow items-center justify-center">
+            <main 
+            // className="relative flex flex-grow items-center justify-center"
+                className={`absolute top-0 left-0 w-full h-full flex items-center justify-center z-10`}
+                // className={`flex-grow flex items-center justify-center`}
+            >
                 <motion.div
                     initial={{ width: "50%", height: "50%" }} // Starting dimensions
                     animate={{
@@ -83,6 +89,8 @@ export default function Home() {
                     // ${expandUsePlatformWidth && expandUsePlatformHeight ? "absolute z-50" : "relative"}`}
                     className={` bg-black text-white shadow-lg border border-white flex flex-col rounded-lg
                     justify-center items-center px-8 py-8 sm:px-24 sm:py-16
+                    ${expandUsePlatformWidth ? "border-x-0 rounded-none" : ""}
+                    ${expandUsePlatformHeight ? "border-0" : ""}
                     ${expandUsePlatformWidth && expandUsePlatformHeight ? "fixed" : "relative"}`}
                 >
                     <AnimatePresence>
