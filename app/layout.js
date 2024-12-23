@@ -1,9 +1,10 @@
 import localFont from "next/font/local";
+import { officeCodeProRegular } from "./fonts";
 import "./globals.css";
 
-const officeCodeProRegular = localFont({
-  src: "./fonts/OfficeCodePro-Regular.woff2",
-});
+// const officeCodeProRegular = localFont({
+//   src: "./fonts/OfficeCodePro-Regular.woff2",
+// });
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
 //   variable: "--font-geist-sans",

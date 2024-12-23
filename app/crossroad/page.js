@@ -1,14 +1,22 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { useState, useEffect } from "react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
+
 export default function Home() {
+    const router = useRouter();
+
+    const navigateToPage = () => {
+        router.push("/platform");
+    };
+
     const [menuState, setMenuState] = useState(null); // Initial state is null to indicate loading
 
     useEffect(() => {
+
         const isMobile = window.innerWidth <= 768;
         setMenuState({
             view: "menu", // Possible values: 'menu', 'about', 'platform'
@@ -44,20 +52,20 @@ export default function Home() {
         updateMenuState({ view: "platform", showContent: false, dimensions: { width: "100%", height: "100%" }, expanded: true });
         setTimeout(() => updateMenuState({ showContent: true }), 1_000)
     };
+
     if (!menuState) {
         // Render nothing or a loading indicator until menuState is defined
         return null;
     }
 
     return (
-        <div
-            className={`relative h-screen flex flex-col bg-gradient-to-b from-[rgba(66,55,226,1)] 
-                via-[rgba(66,55,226,1)] to-[rgba(0,0,0,0)] bg-[length:100%_100%]`}
-        >
+        <>
+
             <Header />
             <main
-                className={`absolute top-0 left-0 w-full h-full flex items-center justify-center z-10`}
-            >
+                className={`absolute top-0 left-0 w-full h-full flex items-center justify-center z-10
+                    bg-gradient-to-b from-[rgba(66,55,226,1)] via-[rgba(66,55,226,1)] to-[rgba(0,0,0,0)]
+                    bg-[length:100%_100%]`}>
                 <motion.div
                     initial={{ width: menuState.dimensions.width, height: menuState.dimensions.height }}
                     animate={{
@@ -77,11 +85,14 @@ export default function Home() {
                     onUpdate={(latest) => {
                         // Check if width or height reaches 100% and update the state, 
                         // this is to activate a css class for the animation
-                        if (!menuState.fullWidth && parseFloat(latest.width) === 100) {
+                        if (parseFloat(latest.width) === 100) {
                             updateMenuState({ fullWidth: true });
                         }
-                        if (!menuState.fullHeight && parseFloat(latest.height) === 100) {
+                        if (parseFloat(latest.height) === 100) {
                             updateMenuState({ fullHeight: true });
+                        }
+                        if (parseFloat(latest.height) === 100 && !menuState.isMobile) {
+                            navigateToPage();
                         }
                     }}
                     className={` bg-black text-white shadow-lg border border-white flex flex-col rounded-lg
@@ -140,13 +151,12 @@ export default function Home() {
                                     </button>
                                 </>
                             )}
-                            {menuState.view == "platform" && menuState.showContent && (
+                            {menuState.view == "platform" && menuState.showContent && menuState.isMobile && (
                                 <>
-                                    {menuState.isMobile && (
-                                        <p className="font-light text-sm sm:text-base leading-relaxed text-justify mb-16">
-                                            Please use a Desktop device to access the platform
-                                        </p>
-                                    )}
+                                    <p className="font-light text-sm sm:text-base leading-relaxed text-justify mb-16">
+                                        Please use a Desktop device to access the platform
+                                    </p>
+                                    <button onClick={navigateToPage}>lol</button>
                                 </>
                             )}
                         </motion.div>
@@ -154,6 +164,6 @@ export default function Home() {
                 </motion.div>
             </main>
             <Footer />
-        </div>
+        </>
     );
 }
