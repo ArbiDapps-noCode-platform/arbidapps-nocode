@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion"; // Corrected import for framer-motion
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { interactionOptions } from "@/public/constants/deploy";
 import DropdownArow_icon from "@/public/assets/icons/DropdownArow_icon";

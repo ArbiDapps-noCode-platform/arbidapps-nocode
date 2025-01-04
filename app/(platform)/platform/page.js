@@ -1,10 +1,10 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion"; // Corrected import for framer-motion
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { squares, figures } from "@/public/constants/animations";
 
-export default function Home() {
+export default function Platform() {
     const router = useRouter();
 
     const navigateToPage = () => {
