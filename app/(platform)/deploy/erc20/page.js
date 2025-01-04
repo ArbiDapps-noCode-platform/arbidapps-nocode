@@ -68,8 +68,8 @@ export default function Home() {
                                 Deploy
                             </button>
                         </div>
-                    </motion.div>) :
-                    (<motion.div className="w-1/2 h-full flex flex-col">
+                    </motion.div>) : (
+                    <motion.div className="w-1/2 h-full flex flex-col">
                         <div className="relative w-full border-b-2 border-white">
                             <select
                                 className="appearance-none rounded-none bg-black pl-8 pr-2 py-2 w-[200px] text-white text-sm focus:outline-none border-white"
