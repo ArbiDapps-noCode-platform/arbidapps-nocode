@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion"; // Corrected import for framer-motion
 import { useEffect, useState } from "react";
+import { squares, figures } from "@/public/constants/animations";
 
 export default function Home() {
     const router = useRouter();
@@ -10,100 +11,7 @@ export default function Home() {
         router.push("/");
     };
 
-    // Array to create 5 squares with initial colors and content
-    const squares = [
-        { color: "#21a575", border: "#19BD5DA6", miniSquaresColor: "#19BD5D"},
-        { color: "#c33354", border: "#E23232A6", miniSquaresColor: "#E23232"},
-        { color: "#a79a3e", border: "#BDAF19A6", miniSquaresColor: "#BDAF19" },
-        { color: "#89c452", border: "#99E232A6", miniSquaresColor: "#99E232" },
-        { color: "#21a5b5", border: "#19BDAAA6", miniSquaresColor: "#19BDAA" },
-    ];
-
     const [areSquaresVisible, setAreSquaresVisible] = useState("hidden");
-
-    const figures = [
-        // First figure: 7
-        [
-            { initialX: -1, initialY: -1, finalX: -1, finalY: -3 },
-            { initialX: 0, initialY: -1, finalX: 0, finalY: -3 },
-            { initialX: 1, initialY: -1, finalX: 1, finalY: -3 },
-
-            { initialX: -1, initialY: 0, finalX: -1, finalY: -3 },
-            { initialX: 0, initialY: 0, finalX: 0, finalY: 0 },
-            { initialX: 0, initialY: 0, finalX: 0, finalY: -1 },
-            { initialX: 0, initialY: 0, finalX: 0, finalY: -3 },
-            { initialX: 1, initialY: 0, finalX: 1, finalY: -2 },
-
-            { initialX: -1, initialY: 1, finalX: -1, finalY: -3 },
-            { initialX: 0, initialY: 1, finalX: 0, finalY: 1 },
-            { initialX: 1, initialY: 1, finalX: 1, finalY: -3 },
-        ],
-
-        // Second figure: 2
-        [
-            { initialX: -1, initialY: -1, finalX: -1, finalY: -3 },
-            { initialX: 0, initialY: -1, finalX: 0, finalY: -3 },
-            { initialX: 1, initialY: -1, finalX: 1, finalY: -2 },
-
-            { initialX: -1, initialY: 0, finalX: -1, finalY: 0 },
-            { initialX: 0, initialY: 0, finalX: 0, finalY: -1 },
-            { initialX: 1, initialY: 0, finalX: 1, finalY: -2 },
-
-            { initialX: -1, initialY: 1, finalX: -1, finalY: 1 },
-            { initialX: 0, initialY: 1, finalX: 0, finalY: 1 },
-            { initialX: 1, initialY: 1, finalX: 1, finalY: 1 },
-        ],
-
-        // Third figure: T
-        [
-            { initialX: -1, initialY: -1, finalX: -1, finalY: -3 },
-            { initialX: 0, initialY: -1, finalX: 0, finalY: -3 },
-            { initialX: 1, initialY: -1, finalX: 1, finalY: -3 },
-
-            { initialX: -1, initialY: 0, finalX: -1, finalY: -3 },
-            { initialX: 0, initialY: 0, finalX: 0, finalY: -2 },
-            { initialX: 0, initialY: 0, finalX: 0, finalY: -1 },
-            { initialX: 0, initialY: 0, finalX: 0, finalY: -0 },
-            { initialX: 1, initialY: 0, finalX: 1, finalY: -3 },
-
-            { initialX: -1, initialY: 1, finalX: -1, finalY: -3 },
-            { initialX: 0, initialY: 1, finalX: 0, finalY: 1 },
-            { initialX: 1, initialY: 1, finalX: 1, finalY: -3 },
-        ],
-
-        // Fourth figure: S
-        [
-            { initialX: -1, initialY: -1, finalX: -1, finalY: -2 },
-            { initialX: 0, initialY: -1, finalX: 0, finalY: -3 },
-            { initialX: 1, initialY: -1, finalX: 1, finalY: -3 },
-
-            { initialX: -1, initialY: 0, finalX: -1, finalY: 1 },
-            { initialX: 0, initialY: 0, finalX: 0, finalY: -1 },
-            { initialX: 1, initialY: 0, finalX: 1, finalY: -3 },
-
-            { initialX: -1, initialY: 1, finalX: -1, finalY: 1 },
-            { initialX: 0, initialY: 1, finalX: 0, finalY: 1 },
-            { initialX: 1, initialY: 1, finalX: 1, finalY: 0 },
-        ],
-
-        // Fifth figure: D
-        [
-            { initialX: -1, initialY: -1, finalX: -1, finalY: -3 },
-            { initialX: -1, initialY: -1, finalX: -1, finalY: 0 },
-            { initialX: 0, initialY: -1, finalX: 0, finalY: -3 },
-            { initialX: 1, initialY: -1, finalX: 1, finalY: -2 },
-
-            // { initialX: -1, initialY: 0, finalX: -1, finalY: 0 },
-            { initialX: -1, initialY: 0, finalX: -1, finalY: -1 },
-            { initialX: -1, initialY: 0, finalX: -1, finalY: -2 },
-            { initialX: 0, initialY: 0, finalX: 0, finalY: -3 },
-            { initialX: 1, initialY: 0, finalX: 1, finalY: -1 },
-
-            { initialX: -1, initialY: 1, finalX: -1, finalY: 1 },
-            { initialX: 0, initialY: 1, finalX: 0, finalY: 1 },
-            { initialX: 1, initialY: 1, finalX: 1, finalY: 0 },
-        ]
-    ]
 
     // Manage hover states for each square
     const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -112,7 +20,7 @@ export default function Home() {
         <main
             className={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-between z-10 px-10 sm:px-24 bg-black text-white py-20`}
         >
-            <div className="w-full h-[650px] flex gap-1.5">
+            <div className="w-full h-full flex gap-1.5">
                 {squares.map((square, index) => (
                     <motion.div
                         key={index}
@@ -161,7 +69,7 @@ export default function Home() {
                                     <motion.div
                                         key={i}
                                         className="absolute w-[20px] h-[20px]"
-                                        style={{backgroundColor: square.miniSquaresColor}}
+                                        style={{ backgroundColor: square.miniSquaresColor }}
                                         initial={{
                                             x: sq.initialX * 20,
                                             y: sq.initialY * 20,
@@ -187,7 +95,7 @@ export default function Home() {
                     </motion.div>
                 ))}
             </div>
-             
+
             {/* Text Carousel */}
             <div className="w-full overflow-hidden relative bg-black flex items-center">
                 <div className="carousel flex whitespace-nowrap">

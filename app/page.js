@@ -1,11 +1,18 @@
 "use client"
 // import stars from "@/public/assets/stars.png"
+import { useRouter } from "next/navigation";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
 
 
 export default function Home() {
+  const router = useRouter();
+
+  const navigateToPage = () => {
+    router.push("/crossroad");
+  };
+
   return (
     <div className="h-screen flex flex-col">
       <Header />
@@ -19,14 +26,14 @@ export default function Home() {
         <div className="relative z-10 px-16 py-14 sm:px-40 sm:py-28">
           <h1 className="font-light text-3xl sm:text-6xl sm:leading-relaxed mb-16">
             ArbiDapps <br />
-            <span className="bg-yellow-300 px-1 text-black ">noCode</span> Platform
+            <span className="bg-[#F5EB43] px-1 text-black ">noCode</span> Platform
           </h1>
           {/* Here, we must allow the connection for the wallet */}
           <button className="border border-1 border-white rounded-lg py-2 px-4
             hover:bg-white hover:text-black hover:cursor-pointer
             transition duration-200 ease-in-out
             active:scale-95 active:bg-gray-200 select-none"
-            onClick={() => alert("Connect wallet")}
+            onClick={navigateToPage}
           >
             Connect wallet
           </button>
