@@ -52,7 +52,7 @@ export default function Profile() {
                 </h1>
 
                 <div className="w-full flex flex-row justify-between items-center mt-4">
-                    <h2 className="text">{"username"}'s Dashboard</h2>
+                    <h2 className="text">{"username"}&apos;s Dashboard</h2>
 
                     <div className="flex flex-row justify-end items-center">
                         <p className="mr-2">Total deployed dApps:</p>
