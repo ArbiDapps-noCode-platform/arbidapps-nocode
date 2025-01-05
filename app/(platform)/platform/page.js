@@ -1,20 +1,25 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { squares, figures } from "@/public/constants/animations";
 
 export default function Platform() {
     const router = useRouter();
 
-    const navigateToPage = () => {
-        router.push("/");
-    };
-
     const [areSquaresVisible, setAreSquaresVisible] = useState("hidden");
 
     // Manage hover states for each square
     const [hoveredIndex, setHoveredIndex] = useState(null);
+
+    // Create an object enumerating the elements from 1 to 5
+    const numberEnum = {
+        0: ["erc721", "/deploy/erc721"],
+        1: ["erc20", "/deploy/erc20"],
+        2: ["Airdrop", "/deploy/airdrop"],
+        3: ["Multisign Smart Account", "/deploy/msa"],
+        4: ["DAO", "/deploy/dao"],
+    };
 
     return (
         <main
@@ -37,30 +42,30 @@ export default function Platform() {
                         }}
                         onAnimationComplete={() => {
                             setTimeout(() => {
-                                setAreSquaresVisible("visible")
+                                setAreSquaresVisible("visible");
                             }, 250);
-                        }} // Change color after animation
-                        className={`group flex-grow h-full justify-center bg-[#4237E2] rounded-xl relative transition-all`} // Adding hover effect to scale down on hover
+                        }}
+                        className={`group flex-grow h-full justify-center bg-[#4237E2] rounded-xl relative transition-all cursor-pointer`}
+                        onClick={() => router.push(numberEnum[index][1])} // Navigate to the corresponding page
                     >
-                        {/* First div occupying the entire space */}
-                        <div className="h-full w-full rounded-xl transition-all duration-300 group-hover:scale-90"
+                        <div
+                            className="h-full w-full rounded-xl transition-all duration-300 group-hover:scale-90"
                             style={{
                                 backgroundColor: square.border,
-                                visibility: areSquaresVisible
-                            }}>
-                        </div>
+                                visibility: areSquaresVisible,
+                            }}
+                        ></div>
 
-                        {/* Second div, 18px smaller both vertically and horizontally */}
-                        <div className="rounded-xl absolute top-0 left-0 z-10 flex justify-center items-center"
+                        <div
+                            className="rounded-xl absolute top-0 left-0 z-10 flex justify-center items-center"
                             style={{
                                 backgroundColor: square.color,
-                                width: `calc(100% - 18px)`, // Make width 18px smaller
-                                height: `calc(100% - 18px)`, // Make height 18px smaller
-                                top: "9px", // Center the smaller div vertically
-                                left: "9px", // Center the smaller div horizontally
-                                visibility: areSquaresVisible
+                                width: `calc(100% - 18px)`,
+                                height: `calc(100% - 18px)`,
+                                top: "9px",
+                                left: "9px",
+                                visibility: areSquaresVisible,
                             }}
-                            // We'll handle mouse events here to trigger the small squares animation
                             onMouseEnter={() => setHoveredIndex(index)}
                             onMouseLeave={() => setHoveredIndex(null)}
                         >
@@ -69,7 +74,9 @@ export default function Platform() {
                                     <motion.div
                                         key={i}
                                         className="absolute w-[20px] h-[20px]"
-                                        style={{ backgroundColor: square.miniSquaresColor }}
+                                        style={{
+                                            backgroundColor: square.miniSquaresColor,
+                                        }}
                                         initial={{
                                             x: sq.initialX * 20,
                                             y: sq.initialY * 20,
@@ -77,13 +84,13 @@ export default function Platform() {
                                         animate={
                                             hoveredIndex === index
                                                 ? {
-                                                    x: sq.finalX * 20,
-                                                    y: sq.finalY * 20,
-                                                }
+                                                      x: sq.finalX * 20,
+                                                      y: sq.finalY * 20,
+                                                  }
                                                 : {
-                                                    x: sq.initialX * 20,
-                                                    y: sq.initialY * 20,
-                                                }
+                                                      x: sq.initialX * 20,
+                                                      y: sq.initialY * 20,
+                                                  }
                                         }
                                         transition={{
                                             duration: 0.15,
@@ -97,32 +104,28 @@ export default function Platform() {
             </div>
 
             {/* Text Carousel */}
-            <div className="w-full overflow-hidden relative bg-black flex items-center">
+            <div className="w-full overflow-hidden relative bg-black flex items-center mt-6">
                 <div className="carousel flex whitespace-nowrap">
-                    <div className="animate-scroll">
-                        {Array(10)
-                            .fill("select token")
-                            .map((text, index) => (
-                                <span
-                                    key={`text-${index}`}
-                                    className="mx-4 text-6xl font-bold text-white"
-                                >
-                                    {text}
-                                </span>
-                            ))}
-                    </div>
-                    <div className="animate-scroll">
-                        {Array(10)
-                            .fill("select token")
-                            .map((text, index) => (
-                                <span
-                                    key={`text-duplicate-${index}`}
-                                    className="mx-4 text-6xl font-bold text-white"
-                                >
-                                    {text}
-                                </span>
-                            ))}
-                    </div>
+                    {hoveredIndex === null ? (
+                        <div className="animate-scroll">
+                            {Array(10)
+                                .fill("select token")
+                                .map((text, index) => (
+                                    <span
+                                        key={`text-${index}`}
+                                        className="mx-4 text-6xl font-bold text-white"
+                                    >
+                                        {text}
+                                    </span>
+                                ))}
+                        </div>
+                    ) : (
+                        <div className="flex justify-center w-full">
+                            <span className="text-6xl font-bold text-white">
+                                {numberEnum[hoveredIndex][0]}
+                            </span>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -130,6 +133,7 @@ export default function Platform() {
             <style jsx>{`
                 .carousel {
                     display: flex;
+                    overflow: hidden;
                 }
                 .animate-scroll {
                     display: flex;
