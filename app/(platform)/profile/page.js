@@ -87,17 +87,28 @@ export default function Profile() {
                                 return (
                                     <div
                                         key={index}
-                                        style={{
-                                            backgroundColor: colors[index % colors.length], // Cycle through colors
-                                        }}
-                                        className="w-[calc(100vw/5-16px)] h-40 rounded-md mx-[8px] relative flex items-center justify-center"
+                                        className="relative w-[calc(100vw/5-16px)] h-40 mx-[8px] flex items-center justify-center"
                                     >
-                                        {/* Render Icon at the center */}
-                                        <IconComponent />
+                                        {/* Blue background beneath */}
+                                        <div className="absolute inset-0 bg-[#4237E2] rounded-md z-0"></div>
+
+                                        {/* Colored square */}
+                                        <div
+                                            style={{
+                                                backgroundColor: colors[index % colors.length],
+                                            }}
+                                            className="relative w-full h-full rounded-md flex items-center justify-center z-10 transition-transform duration-200 hover:scale-90"
+                                        >
+                                            {/* Icon stays fixed */}
+                                            <div className="absolute">
+                                                <IconComponent />
+                                            </div>
+                                        </div>
                                     </div>
                                 );
                             })}
                     </div>
+
                 )}
             </div>
             <div className="w-full h-full flex flex-col mt-8">
@@ -133,20 +144,28 @@ export default function Profile() {
                     ) : (
                         <div className="w-full overflow-x-auto p-2">
                             <div className="flex w-max">
-                                {Array(loadedSquares)
+                                {Array(loadingSquares)
                                     .fill(null)
                                     .map((_, index) => {
                                         const IconComponent = icons[index % icons.length]; // Cycle through icons
                                         return (
                                             <div
                                                 key={index}
-                                                style={{
-                                                    backgroundColor: colors[3], // Cycle through colors
-                                                }}
-                                                className="w-[calc(100vw/5-16px)] h-40 rounded-md mx-[8px] relative flex items-center justify-center"
+                                                className="relative w-[calc(100vw/5-16px)] h-40 mx-[8px] flex items-center justify-center"
                                             >
-                                                {/* Render Icon at the center */}
-                                                <IconComponent />
+                                                {/* Blue background beneath */}
+                                                <div className="absolute inset-0 bg-[#4237E2] rounded-md"></div>
+
+                                                {/* Colored square */}
+                                                <div
+                                                    style={{
+                                                        backgroundColor: colors[3],
+                                                    }}
+                                                    className="relative w-full h-full rounded-md flex items-center justify-center transition-transform duration-200 hover:scale-90"
+                                                >
+                                                    {/* Absolutely positioned Icon */}
+                                                    <IconComponent className="absolute w-12 h-12" />
+                                                </div>
                                             </div>
                                         );
                                     })}
